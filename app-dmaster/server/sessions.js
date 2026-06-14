@@ -53,3 +53,24 @@ export function removeConnection(sessionId, wsId) {
     if (conn) leaveSession(sessionId, conn.playerId)
 }
 
+export function broadcast(sessionId, message, excludeWs = null) {
+    const session = getSession(sessionId)
+    if (!session) return
+    const data = JSON.stringify(message)
+    for (const { ws } of session.connections.values()) {
+        if (ws !== excludeWs && ws.readyState == ws.OPEN) ws.send(data)
+    }
+}
+
+export function getSnapshot(sessionId) {
+    const session = getSession(sessionId)
+    if (!session) return null
+    const { connections, ...snapshot } = session
+    return snapshot
+}
+
+export function listSessions() {
+    return Object.values(sessions).map(s => ({
+        id: s.id, name: s.name, playerCount: Object.keys(s.players).length, createdAt: s.createdAt,
+    }))
+}
