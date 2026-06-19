@@ -1,5 +1,6 @@
 import { app, BrowserWindow } from 'electron'
 import { fileURLToPath } from 'url'
+import { start } from '../server/index.js'
 import path from 'path'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -26,8 +27,9 @@ function createwindow() {
 }
 
 app.whenReady().then(() => {
+    start()
     createwindow()
-    require('../server/index.js')
+    
 })
 
 app.on('window-all-closed', () => {

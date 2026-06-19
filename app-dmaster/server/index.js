@@ -39,3 +39,7 @@ websocketserver.on('connection', (ws, req) => {
 
     ws.on('close', () => removeConnection(sessionId, webSocketId))
 })
+
+export function start() {
+    server.listen(port, () => console.log(`server on ${port}`))
+}
