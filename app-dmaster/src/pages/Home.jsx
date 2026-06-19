@@ -6,7 +6,7 @@ export function Home() {
     const navigate = useNavigate()
 
     async function handleCreateSession() {
-        const res = await fetch('http://192.168.1.112/api/session', {
+        const res = await fetch('http://localhost:3000/api/session', {
             method: 'POST',
             headers: { 'Content-type': 'application/json' },
             body: JSON.stringify({ name }),

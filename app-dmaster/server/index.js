@@ -1,4 +1,5 @@
 import express from 'express'
+import cors from 'cors'
 import { createSession, getSession, joinSession, addConnection, removeConnection, broadcast, getSnapshot } from './sessions.js'
 import { createServer } from 'http'
 import { WebSocketServer } from 'ws'
@@ -9,6 +10,7 @@ const port = 3000
 const server = createServer(app)
 const websocketserver = new WebSocketServer({server})
 
+app.use(cors())
 app.use(express.json())
 
 // cria sessão
