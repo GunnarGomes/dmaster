@@ -5,7 +5,7 @@
   "type": "module",
   "main": "electron/main.js",
   "scripts": {
-    "dev": "concurrently \"vite\" \"wait-on http://localhost:5173 && electron .\"",
+    "dev": " cross-env NODE_ENV=development concurrently \"vite\" \"wait-on http://localhost:5173 && electron .\"",
     "build": "vite build",
     "build:electron": "electron-builder",
     "lint": "eslint .",
@@ -15,6 +15,7 @@
     "express": "^5.2.1",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
+    "react-router-dom": "^7.18.0",
     "ws": "^8.21.0"
   },
   "devDependencies": {
@@ -23,6 +24,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
     "concurrently": "^10.0.3",
+    "cross-env": "^10.1.0",
     "electron": "^42.4.0",
     "electron-builder": "^26.15.2",
     "eslint": "^10.3.0",

@@ -12,7 +12,7 @@ function createwindow() {
         height: 800,
         center: true,
         webPreferences: {
-            preload: path.join(__dirname, 'preload.js'),
+            preload: path.join(__dirname, 'preload.cjs'),
             contextIsolation: true,
         }
     })
@@ -21,7 +21,7 @@ function createwindow() {
         win.loadURL('http://localhost:5173')
         win.webContents.openDevTools()
     } else {
-        win.loadFile(path.join(__dirname, '../dist/index.html'))
+        win.loadFile(path.join(__dirname, '../index.html'))
 
     }
 }
