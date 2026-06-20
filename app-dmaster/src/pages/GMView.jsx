@@ -38,7 +38,7 @@ export function GMView() {
     <div>
       <h1>Sessão: {session?.name || 'Carregando...'}</h1>
       <p>Status: {connected ? '🟢 Conectado' : '🔴 Desconectado'}</p>
-
+      // FIXME: playerLink está para localhost apenas coloque para ip vale mano
       <div>
         <p>Link para jogadores:</p>
         <input readOnly value={playerLink} onClick={(e) => e.target.select()} />
