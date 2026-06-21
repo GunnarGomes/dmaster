@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from "react"
 import { useParams } from "react-router-dom"
+import MapCanvas from "../components/MapCanva"
 
 export function PLView() {
-    const sessionId = useParams()
+    const {sessionId} = useParams()
     const [name, setName] = useState('')
     const [joined, setJoined] = useState(false)
     const [session, setSession] = useState(null)
@@ -15,6 +16,8 @@ export function PLView() {
 
     // gera ou recupera playerId persistente
     useEffect(() => {
+        console.log('session:', session)
+        console.log('tokens:', session?.tokens)
         let id = localStorage.getItem(`playerId_${sessionId}`)
         if (!id) {
             id = generateId()
@@ -42,6 +45,15 @@ export function PLView() {
             if (msg.type === 'SNAPSHOT') {
                 setSession(msg.payload)
             }
+            if (msg.type === 'TOKEN_MOVE') {
+              setSession(prev => ({
+                ...prev,
+                tokens: prev.tokens.map(t =>
+                  t.id === msg.payload.id ? { ...t, x: msg.payload.x, y: msg.payload.y } : t
+                )
+              }))
+            }
+            
         }
         ws.onclose = () => setJoined(false)
         wsRef.current = ws
@@ -54,6 +66,22 @@ export function PLView() {
     }
 
     // depois adicionar movimentação de tokens
+    function handleTokenMove(id, x, y) {
+      const token = session.tokens.find(t => t.id === id)
+
+      // só deixa mover o PRÓPRIO token
+      if (token.ownerId !== playerId) return
+
+      setSession(prev => ({
+        ...prev,
+        tokens: prev.tokens.map(t => t.id === id ? { ...t, x, y } : t)
+      }))
+
+      wsRef.current.send(JSON.stringify({
+        type: 'TOKEN_MOVE',
+        payload: { id, x, y }
+      }))
+    }
 
     if (!joined) {
     return (

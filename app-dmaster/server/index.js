@@ -30,11 +30,14 @@ app.post('/api/session', (req, res) => {
 websocketserver.on('connection', (ws, req) => {
   const params = new URLSearchParams(req.url.split('?')[1])
   const sessionId = params.get('session')
+  console.log('Player conectando na sessão:', sessionId)
+
   const playerId = params.get('playerId')
   const playerName = params.get('name')
   const role = params.get('role') || 'player'
   const webSocketId = randomUUID() // gerado pelo servidor, não recebido do cliente
-
+  const session = getSession(sessionId)
+  console.log('Sessão encontrada?', !!session)
   joinSession(sessionId, playerId, playerName, role)
   addConnection(sessionId, webSocketId, ws, playerId, role)
 

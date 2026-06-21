@@ -1,12 +1,26 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
+import MapCanvas from "../components/MapCanva";
+import Token from "../components/Token";
 
 export function GMView() {
     const { sessionId } = useParams()
     const [session, setSession] = useState(null)
     const [connected, setConnected] = useState(false)
-    const wsRef = useRef(null)
+    const [tokens, setTokens] = useState([
+      { id: 'tok1', x: 75, y: 75, name: 'Aria', color: '#4a90d9' },
+      { id: 'tok2', x: 175, y: 175, name: 'Goblin', color: '#d94a4a' },
+    ])
+    const wsRef = useRef(null) 
+    function handleTokenMove(id, x, y){
+      setTokens(prev => prev.map(t => t.id === id ? { ...t, x, y } : t))
 
+      // enviar via WebSocket pros outros
+      wsRef.current.send(JSON.stringify({
+        type: 'TOKEN_MOVE',
+        payload: { id, x, y }
+      }))
+    }
     useEffect(() => {
         const playerId = 'gm-' + sessionId
 
@@ -25,6 +39,11 @@ export function GMView() {
                 setSession(msg.payload)
             }
             // aqui vem outros eventos blz?
+            if (msg.type === 'TOKEN_MOVE') {
+              setTokens(prev => prev.map(t => 
+                t.id === msg.payload.id ? {...t, x: msg.payload.x, y: msg.payload.y} : t
+              ))
+            }
 
         }
         ws.onclose = () => setConnected(false)
@@ -38,7 +57,7 @@ export function GMView() {
     <div>
       <h1>Sessão: {session?.name || 'Carregando...'}</h1>
       <p>Status: {connected ? '🟢 Conectado' : '🔴 Desconectado'}</p>
-      // FIXME: playerLink está para localhost apenas coloque para ip vale mano
+      // FIXME: playerLink está para localhost apenas coloque para ip valeu mano
       <div>
         <p>Link para jogadores:</p>
         <input readOnly value={playerLink} onClick={(e) => e.target.select()} />
@@ -53,7 +72,15 @@ export function GMView() {
           <li key={id}>{player.name} {player.connected ? '🟢' : '🔴'}</li>
         ))}
       </ul>
+      <MapCanvas 
+      mapImageUrl="../assets/The Labyrinth of Damned Chaos 01 (51 x 65).png"
+      tokens={tokens}
+      gridSize={50}
+      onTokenMove={handleTokenMove}
+      />
     </div>
+    
+    
     )
 
 }
