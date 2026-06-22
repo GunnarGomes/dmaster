@@ -7,10 +7,7 @@ export function GMView() {
     const { sessionId } = useParams()
     const [session, setSession] = useState(null)
     const [connected, setConnected] = useState(false)
-    const [tokens, setTokens] = useState([
-      { id: 'tok1', x: 75, y: 75, name: 'Aria', color: '#4a90d9' },
-      { id: 'tok2', x: 175, y: 175, name: 'Goblin', color: '#d94a4a' },
-    ])
+    
     const wsRef = useRef(null) 
     function handleTokenMove(id, x, y){
       setTokens(prev => prev.map(t => t.id === id ? { ...t, x, y } : t))
@@ -72,12 +69,14 @@ export function GMView() {
           <li key={id}>{player.name} {player.connected ? '🟢' : '🔴'}</li>
         ))}
       </ul>
-      <MapCanvas 
-      mapImageUrl="../assets/The Labyrinth of Damned Chaos 01 (51 x 65).png"
-      tokens={tokens}
-      gridSize={50}
-      onTokenMove={handleTokenMove}
-      />
+      {session && (
+        <MapCanvas
+          mapImageUrl={session.map.imageUrl}
+          tokens={session.tokens}
+          gridSize={session.map.gridSize}
+          onTokenMove={handleTokenMove}
+        />
+      )}
     </div>
     
     
