@@ -58,7 +58,7 @@ export function PLView() {
 
   function handleTokenMove(id, x, y) {
     const token = session.tokens.find(t => t.id === id)
-    if (token.ownerId !== playerId) return
+    
     setSession(prev => ({
       ...prev,
       tokens: prev.tokens.map(t => t.id === id ? { ...t, x, y } : t)
